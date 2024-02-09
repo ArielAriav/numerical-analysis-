@@ -3,14 +3,14 @@ from colors import bcolors
 from matrix_utility import swap_row
 
 
-def gaussianElimination(mat):
-    N = len(mat)
+def gaussian_elimination(mat):
+    n = len(mat)
 
     singular_flag = forward_substitution(mat)
 
     if singular_flag != -1:
 
-        if mat[singular_flag][N]:
+        if mat[singular_flag][n]:
             return "Singular Matrix (Inconsistent System)"
         else:
             return "Singular Matrix (May have infinitely many solutions)"
@@ -19,16 +19,14 @@ def gaussianElimination(mat):
     return backward_substitution(mat)
 
 
-
-
 def forward_substitution(mat):
-    N = len(mat)
-    for k in range(N):
+    n = len(mat)
+    for k in range(n):
 
         # Partial Pivoting: Find the pivot row with the largest absolute value in the current column
         pivot_row = k
         v_max = mat[pivot_row][k]
-        for i in range(k + 1, N):
+        for i in range(k + 1, n):
             if abs(mat[i][k]) > v_max:
                 v_max = mat[i][k]
                 pivot_row = i
@@ -43,13 +41,13 @@ def forward_substitution(mat):
             swap_row(mat, k, pivot_row)
         # End Partial Pivoting
 
-        for i in range(k + 1, N):
+        for i in range(k + 1, n):
 
             #  Compute the multiplier
             m = mat[i][k] / mat[k][k]
 
             # subtract fth multiple of corresponding kth row element
-            for j in range(k + 1, N + 1):
+            for j in range(k + 1, n + 1):
                 mat[i][j] -= mat[k][j] * m
 
             # filling lower triangular matrix with zeros
@@ -60,21 +58,23 @@ def forward_substitution(mat):
 
 # function to calculate the values of the unknowns
 def backward_substitution(mat):
-    N = len(mat)
-    x = np.zeros(N)  # An array to store solution
+    n = len(mat)
+    x = np.zeros(n)  # An array to store solution
 
     # Start calculating from last equation up to the first
-    for i in range(N - 1, -1, -1):
+    for i in range(n - 1, -1, -1):
 
-        x[i] = mat[i][N]
+        x[i] = mat[i][n]
 
         # Initialize j to i+1 since matrix is upper triangular
-        for j in range(i + 1, N):
+        for j in range(i + 1, n):
             x[i] -= mat[i][j] * x[j]
 
         x[i] = (x[i] / mat[i][i])
 
     return x
+
+# ___________________________________________________________________________________________________________
 
 
 if __name__ == '__main__':
@@ -84,10 +84,10 @@ if __name__ == '__main__':
         [1, 1, 1, 0, -2],
         [1, -1, 4, 3, 4]]
 
-    result = gaussianElimination(A_b)
+    result = gaussian_elimination(A_b)
     if isinstance(result, str):
         print(result)
     else:
-        print(bcolors.OKBLUE,"\nSolution for the system:")
+        print(bcolors.OKBLUE, "\nSolution for the system:")
         for x in result:
             print("{:.6f}".format(x))
