@@ -26,15 +26,17 @@ def forward_substitution(mat):
         # Partial Pivoting: Find the pivot row with the largest absolute value in the current column
         pivot_row = k
         v_max = mat[pivot_row][k]
-        for i in range(k + 1, n):
+        for i in range(k+1, n):
             if abs(mat[i][k]) > v_max:
                 v_max = mat[i][k]
+                # pivot_row will contain the index of the row with the largest absolute value in the current column.
                 pivot_row = i
 
         # if a principal diagonal element is zero,it denotes that matrix is singular,
         # and will lead to a division-by-zero later.
-        if not mat[k][pivot_row]:
-            return k  # Matrix is singular
+        if mat[k][pivot_row] == 0:
+            # Matrix is singular
+            return k
 
         # Swap the current row with the pivot row
         if pivot_row != k:
@@ -74,6 +76,25 @@ def backward_substitution(mat):
 
     return x
 
+
+def check_solution(original_matrix, solution_vector):
+    # Check if the solution satisfies the original system of equations
+    original_matrix = np.array(original_matrix)
+    rows, cols = original_matrix.shape
+    for i in range(rows):
+        sum = 0
+        for j in range(cols - 1):  # Exclude the last column (augmented column)
+            sum += original_matrix[i][j] * solution_vector[j]
+
+        # Check if the sum is close to the corresponding element in the solution vector
+        if not np.isclose(sum, original_matrix[i, -1]):
+            print("The test didn't work")
+            return False
+
+    print("The test worked")
+    return True
+
+
 # ___________________________________________________________________________________________________________
 
 
@@ -91,3 +112,5 @@ if __name__ == '__main__':
         print(bcolors.OKBLUE, "\nSolution for the system:")
         for x in result:
             print("{:.6f}".format(x))
+
+    check_solution(A_b, result)
