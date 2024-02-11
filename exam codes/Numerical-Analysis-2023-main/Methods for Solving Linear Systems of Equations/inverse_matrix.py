@@ -69,7 +69,8 @@ def inverse(matrix):
 def final_inverse_test(mat, inverse_mat):
     mat_size = mat.shape[0]
     result = matrix_multiply(mat, inverse_mat)
-    if np.allclose(result, np.identity(mat_size)):
+    # np.linalg.inv(A) is a NumPy function that computes the inverse of a square matrix
+    if np.allclose(result, np.identity(mat_size)) and np.allclose(np.linalg.inv(mat), inverse_mat):
         return True
     else:
         return False
