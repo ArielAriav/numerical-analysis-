@@ -26,6 +26,7 @@ def MaxNorm(matrix):
 
     return max_norm
 
+
 #  swapping between row i to row j in the matrix
 def swap_row(mat, i, j):
     N = len(mat)

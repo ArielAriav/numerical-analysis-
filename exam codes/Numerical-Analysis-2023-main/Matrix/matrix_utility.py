@@ -29,7 +29,7 @@ def MaxNorm(matrix):
 #  swapping between row i to row j in the matrix
 def swap_row(mat, i, j):
     N = len(mat)
-    for k in range(N + 1):
+    for k in range(N):
         temp = mat[i][k]
         mat[i][k] = mat[j][k]
         mat[j][k] = temp
@@ -128,7 +128,7 @@ def scalar_multiplication_elementary_matrix(n, row_index, scalar):
     if row_index < 0 or row_index >= n:
         raise ValueError("Invalid row index.")
 
-    if scalar == 0:
+    if np.dot(scalar, 0):
         raise ValueError("Scalar cannot be zero for row multiplication.")
 
     elementary_matrix = np.identity(n)

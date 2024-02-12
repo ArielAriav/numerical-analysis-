@@ -1,5 +1,5 @@
 from colors import bcolors
-from matrix_utility import row_addition_elementary_matrix, scalar_multiplication_elementary_matrix, matrix_multiply
+from matrix_utility import row_addition_elementary_matrix, scalar_multiplication_elementary_matrix, matrix_multiply, swap_row
 import numpy as np
 
 """
@@ -28,8 +28,15 @@ def inverse(matrix):
     for i in range(mat_size):
 
         # Checks if the matrix is singular
-        if matrix[i, i] == 0:
-            raise ValueError("Matrix is singular, cannot find its inverse.")
+        if matrix[i][i] == 0:
+            flag = False
+            for j in range(1, mat_size):
+                if matrix[j][i] != 0:
+                    swap_row(matrix,j,i)
+                    flag = True
+                    break
+            if not flag :
+                raise ValueError("Matrix is singular, cannot find its inverse")
 
         if matrix[i, i] != 1:
             # Scale the current row to make the diagonal element 1
@@ -65,32 +72,34 @@ def inverse(matrix):
 
 
 def final_inverse_test(mat, inverse_mat):
-    mat_size = mat.shape[0]
-    result = matrix_multiply(mat, inverse_mat)
-    # np.linalg.inv(A) is a NumPy function that computes the inverse of a square matrix
-    if np.allclose(result, np.identity(mat_size)) and np.allclose(np.linalg.inv(mat), inverse_mat):
-        return True
-    else:
-        return False
+    if inverse_mat is not None:
+        mat_size = mat.shape[0]
+        result = matrix_multiply(mat, inverse_mat)
+        # np.linalg.inv(A) is a NumPy function that computes the inverse of a square matrix
+        if np.allclose(result, np.identity(mat_size)) and np.allclose(np.linalg.inv(mat), inverse_mat):
+            return True
+        else:
+            return False
 
 
 if __name__ == '__main__':
 
-    A = np.array([[1, 2, 3],
-                  [2, 3, 4],
-                  [3, 4, 6]])
+    A = np.array([[1, 2, 4],
+                  [2, -1, 4],
+                  [-2, 4, -4]])
 
     try:
         A_inverse = inverse(A)
         print(bcolors.OKBLUE, "\nInverse of matrix A: \n", A_inverse)
         print("=====================================================================================================================", bcolors.ENDC)
+        if A_inverse is not None:
+            is_inverse_work = final_inverse_test(A, A_inverse)
+            if is_inverse_work:
+                print("Test work successful (A * A_inverse = I)")
+            else:
+                print("Test didn't work(A * A_inverse != I)")
 
     except ValueError as e:
         print(str(e))
 
-
-    is_inverse_work = final_inverse_test(A, A_inverse)
-    if is_inverse_work:
-        print("Test work successful (A * A_inverse = I)")
-    else:
-        print("Test didn't work(A * A_inverse != I)")
+    print(np.linalg.inv(A))
