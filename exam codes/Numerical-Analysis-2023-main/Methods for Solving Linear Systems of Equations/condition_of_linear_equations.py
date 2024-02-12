@@ -27,11 +27,12 @@ def condition_number(A):
     # Calculation of the norm of A
     norm_A = norm(A)
     # np.linalg.inv(A) is a NumPy function that computes the inverse of a square matrix
-    A_inv = np.linalg.inv(A)
+    A_inv = inverse(A)
     # Calculating the norm of the inverse A
     norm_A_inv = norm(A_inv)
     # Calculation of the condition
     cond = norm_A * norm_A_inv
+
 
     print(bcolors.OKBLUE, "A:", bcolors.ENDC)
     print_matrix(A)
@@ -47,12 +48,16 @@ def condition_number(A):
 
 
 if __name__ == '__main__':
-    A = np.array([[2, 1.7, -2.5],
-                  [1.24, -2, -0.5],
-                  [3, 0.2, 1]])
-    cond = condition_number(A)
+    A = np.array([[0, 1.7, 2],
+                  [0, -2, -0.5],
+                  [0, 0.2, 1]])
+    try:
+        cond = condition_number(A)
+        print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
+    except ValueError :
+        print("Matrix is singular, cannot find its inverse")
 
-    print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
+
 
 
 
