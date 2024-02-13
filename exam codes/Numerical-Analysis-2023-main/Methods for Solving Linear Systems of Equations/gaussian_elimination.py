@@ -6,10 +6,13 @@ from matrix_utility import swap_row
 def gaussian_elimination(mat):
     n = len(mat)
 
+    # If the matrix is singular the flag will be different from -1
     singular_flag = forward_substitution(mat)
 
     if singular_flag != -1:
 
+        # is checking if the value at position [singular_flag][n] is truthy
+        # values like 0, None, and empty strings are considered falsy.
         if mat[singular_flag][n]:
             return "Singular Matrix (Inconsistent System)"
         else:
@@ -22,38 +25,34 @@ def gaussian_elimination(mat):
 def forward_substitution(mat):
     n = len(mat)
     for k in range(n):
+        print(f"\nStep {k + 1}:")
 
         # Partial Pivoting: Find the pivot row with the largest absolute value in the current column
         pivot_row = k
         v_max = mat[pivot_row][k]
-        for i in range(k+1, n):
+        for i in range(k + 1, n):
             if abs(mat[i][k]) > v_max:
                 v_max = mat[i][k]
-                # pivot_row will contain the index of the row with the largest absolute value in the current column.
                 pivot_row = i
 
-        # if a principal diagonal element is zero,it denotes that matrix is singular,
-        # and will lead to a division-by-zero later.
         if mat[k][pivot_row] == 0:
-            # Matrix is singular
-            return k
+            return k  # Matrix is singular
 
-        # Swap the current row with the pivot row
         if pivot_row != k:
             swap_row(mat, k, pivot_row)
-        # End Partial Pivoting
+            print(f"Swap Row {k + 1} with Row {pivot_row + 1}:")
+            print(np.array(mat))  # Print the matrix after swapping
 
         for i in range(k + 1, n):
-
-            #  Compute the multiplier
             m = mat[i][k] / mat[k][k]
+            print(f"Multiplier for Row {i + 1}: {m}")
 
-            # subtract fth multiple of corresponding kth row element
             for j in range(k + 1, n + 1):
                 mat[i][j] -= mat[k][j] * m
 
-            # filling lower triangular matrix with zeros
             mat[i][k] = 0
+            print(f"Row {i + 1} - {m} * Row {k + 1}:")
+            print(np.array(mat))  # Print the matrix after row operations
 
     return -1
 
@@ -77,33 +76,35 @@ def backward_substitution(mat):
     return x
 
 
-def check_solution(original_matrix, solution_vector):
-    # Check if the solution satisfies the original system of equations
+def check_solution(original_matrix, solution_vector_for_check):
     original_matrix = np.array(original_matrix)
-    rows, cols = original_matrix.shape
-    for i in range(rows):
-        sum = 0
-        for j in range(cols - 1):  # Exclude the last column (augmented column)
-            sum += original_matrix[i][j] * solution_vector[j]
 
-        # Check if the sum is close to the corresponding element in the solution vector
-        if not np.isclose(sum, original_matrix[i, -1]):
-            print("The test didn't work")
-            return False
+    # Extract coefficients and constants from the original_matrix
+    # This selects all rows and all columns except the last one
+    coefficients = original_matrix[:, :-1]
+    # This selects all rows and only the last column
+    vector_b = original_matrix[:, -1]
 
-    print("The test worked")
-    return True
+    # Solve the system of equations
+    calculated_solution = np.linalg.solve(coefficients, vector_b)
 
+    # Check if the calculated solution is close to the provided solution_vector_for_check
+    if np.allclose(calculated_solution, solution_vector_for_check):
+        print("The test worked")
+        return True
+    else:
+        print("The test didn't work")
+        return False
 
 # ___________________________________________________________________________________________________________
 
 
 if __name__ == '__main__':
 
-    A_b = [[1, -1, 2, -1, -8],
-        [2, -2, 3, -3, -20],
-        [1, 1, 1, 0, -2],
-        [1, -1, 4, 3, 4]]
+    A_b = [[0, -1, 2, -1, -8],
+        [2, 0, 3, -3, -20],
+        [1, 1, 0, 0, -2],
+        [1, -1, 4, 0, 4]]
 
     result = gaussian_elimination(A_b)
     if isinstance(result, str):
