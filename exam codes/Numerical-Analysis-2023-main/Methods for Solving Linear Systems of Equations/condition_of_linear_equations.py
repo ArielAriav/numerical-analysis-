@@ -48,14 +48,12 @@ def condition_number(A):
 
 
 if __name__ == '__main__':
-    A = np.array([[0, 1.7, 2],
-                  [0, -2, -0.5],
-                  [0, 0.2, 1]])
-    try:
-        cond = condition_number(A)
-        print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
-    except ValueError :
-        print("Matrix is singular, cannot find its inverse")
+    A = np.array(([[1, 2, 3],
+                  [2, 3, 4],
+                  [3, 4, 6]]))
+
+    cond = condition_number(A)
+    print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
 
 
 
