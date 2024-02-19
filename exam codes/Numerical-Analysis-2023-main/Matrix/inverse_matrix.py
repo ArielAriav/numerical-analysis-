@@ -54,6 +54,7 @@ def inverse(matrix):
             #
             identity = np.dot(elementary_matrix, identity)
 
+
         # Zero out the elements above and below the diagonal
         for j in range(mat_size):
             if i != j:
@@ -84,9 +85,9 @@ def final_inverse_test(mat, inverse_mat):
 
 if __name__ == '__main__':
 
-    A = np.array([[1, 2, 4],
-                  [2, -1, 4],
-                  [-2, 4, -4]])
+    A = np.array([[0, 2, 3],
+                  [2, 0, 4],
+                  [2, 4, 6]])
 
     try:
         A_inverse = inverse(A)

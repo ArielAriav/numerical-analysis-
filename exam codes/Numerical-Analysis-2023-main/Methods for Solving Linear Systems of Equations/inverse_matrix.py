@@ -12,7 +12,7 @@ The resulting identity matrix will be the inverse of the input matrix if it is n
 """
 
 
-def inverse(matrix):
+def inverse(matrix,B):
     print(bcolors.OKBLUE, f"=================== Finding the inverse of a non-singular matrix using elementary row operations ===================\n {matrix}\n", bcolors.ENDC)
 
     # Checks whether the matrix is square
@@ -39,6 +39,7 @@ def inverse(matrix):
 
             # Creates a suitable elementary matrix so that it turns into 1
             elementary_matrix = scalar_multiplication_elementary_matrix(mat_size, i, scalar)
+            B.append(elementary_matrix)
             print(f"elementary matrix to make the diagonal element 1 :\n {elementary_matrix} \n")
 
             # performs matrix multiplication between the elementary_matrix and matrix using "NumPy's np.dot function".
@@ -54,6 +55,7 @@ def inverse(matrix):
             if i != j:
                 scalar = -matrix[j, i] / matrix[i, i]
                 elementary_matrix = row_addition_elementary_matrix(mat_size, j, i, scalar)
+                B.append(elementary_matrix)
                 print(f"elementary matrix for R{j+1} = R{j+1} + ({scalar}R{i+1}):\n {elementary_matrix} \n")
                 # use of np.dot for matrix multiplication
                 matrix = np.dot(elementary_matrix, matrix)
@@ -63,7 +65,7 @@ def inverse(matrix):
                 # use of np.dot for matrix multiplication
                 identity = np.dot(elementary_matrix, identity)
 
-    return identity
+    return identity,B
 
 
 def final_inverse_test(mat, inverse_mat):
@@ -81,15 +83,15 @@ if __name__ == '__main__':
     A = np.array([[1, 2, 3],
                   [2, 3, 4],
                   [3, 4, 6]])
+    B = []
 
     try:
-        A_inverse = inverse(A)
+        A_inverse,B = inverse(A,B)
         print(bcolors.OKBLUE, "\nInverse of matrix A: \n", A_inverse)
         print("=====================================================================================================================", bcolors.ENDC)
 
     except ValueError as e:
         print(str(e))
-
 
     is_inverse_work = final_inverse_test(A, A_inverse)
     if is_inverse_work:

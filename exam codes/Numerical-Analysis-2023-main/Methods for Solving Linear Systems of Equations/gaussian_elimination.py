@@ -101,10 +101,10 @@ def check_solution(original_matrix, solution_vector_for_check):
 
 if __name__ == '__main__':
 
-    A_b = [[0, -1, 2, -1, -8],
-        [2, 0, 3, -3, -20],
-        [1, 1, 0, 0, -2],
-        [1, -1, 4, 0, 4]]
+    A_b = [[1, 2, 3, 4, 5],
+        [2, 3, 4, 5, 1],
+        [8, 8, 8, 8, 1],
+        [24, 15, 22, 1, 8]]
 
     result = gaussian_elimination(A_b)
     if isinstance(result, str):
