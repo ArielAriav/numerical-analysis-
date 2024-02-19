@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     except ValueError as e:
         print(str(e))
-
+    # print("Elementary matrix num 2:",B[1])
     is_inverse_work = final_inverse_test(A, A_inverse)
     if is_inverse_work:
         print("Test work successful (A * A_inverse = I)")
