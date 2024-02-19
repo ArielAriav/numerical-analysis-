@@ -12,9 +12,9 @@ The resulting identity matrix will be the inverse of the input matrix if it is n
 """
 
 
-def inverse(matrix,B):
+def inverse(matrix):
     print(bcolors.OKBLUE, f"=================== Finding the inverse of a non-singular matrix using elementary row operations ===================\n {matrix}\n", bcolors.ENDC)
-
+    counter = 0
     # Checks whether the matrix is square
     # "matrix.shape" is a tuple representing the dimensions of the array
     if matrix.shape[0] != matrix.shape[1]:
@@ -39,8 +39,8 @@ def inverse(matrix,B):
 
             # Creates a suitable elementary matrix so that it turns into 1
             elementary_matrix = scalar_multiplication_elementary_matrix(mat_size, i, scalar)
-            B.append(elementary_matrix)
-            print(f"elementary matrix to make the diagonal element 1 :\n {elementary_matrix} \n")
+            counter += 1
+            print(f"elementary matrix num {counter} to make the diagonal element 1 :\n {elementary_matrix} \n")
 
             # performs matrix multiplication between the elementary_matrix and matrix using "NumPy's np.dot function".
             matrix = np.dot(elementary_matrix, matrix)
@@ -55,8 +55,8 @@ def inverse(matrix,B):
             if i != j:
                 scalar = -matrix[j, i] / matrix[i, i]
                 elementary_matrix = row_addition_elementary_matrix(mat_size, j, i, scalar)
-                B.append(elementary_matrix)
-                print(f"elementary matrix for R{j+1} = R{j+1} + ({scalar}R{i+1}):\n {elementary_matrix} \n")
+                counter += 1
+                print(f"elementary matrix num {counter} - for R{j+1} = R{j+1} + ({scalar}R{i+1}):\n {elementary_matrix} \n")
                 # use of np.dot for matrix multiplication
                 matrix = np.dot(elementary_matrix, matrix)
                 print(f"The matrix after elementary operation :\n {matrix}")
@@ -65,7 +65,7 @@ def inverse(matrix,B):
                 # use of np.dot for matrix multiplication
                 identity = np.dot(elementary_matrix, identity)
 
-    return identity,B
+    return identity
 
 
 def final_inverse_test(mat, inverse_mat):
@@ -83,16 +83,15 @@ if __name__ == '__main__':
     A = np.array([[1, 2, 3],
                   [2, 3, 4],
                   [3, 4, 6]])
-    B = []
+
 
     try:
-        A_inverse,B = inverse(A,B)
+        A_inverse = inverse(A)
         print(bcolors.OKBLUE, "\nInverse of matrix A: \n", A_inverse)
         print("=====================================================================================================================", bcolors.ENDC)
 
     except ValueError as e:
         print(str(e))
-    # print("Elementary matrix num 2:",B[1])
     is_inverse_work = final_inverse_test(A, A_inverse)
     if is_inverse_work:
         print("Test work successful (A * A_inverse = I)")

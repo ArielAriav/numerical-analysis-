@@ -1,5 +1,5 @@
 from colors import bcolors
-from matrix_utility import row_addition_elementary_matrix, scalar_multiplication_elementary_matrix, matrix_multiply, swap_row
+from matrix_utility import row_addition_elementary_matrix, scalar_multiplication_elementary_matrix, matrix_multiply, swap_row, MaxNorm
 import numpy as np
 
 """
@@ -11,7 +11,7 @@ The resulting identity matrix will be the inverse of the input matrix if it is n
 
 
 def inverse(matrix):
-    print(bcolors.OKBLUE, f"=================== Finding the inverse of a non-singular matrix using elementary row operations ===================\n {matrix}\n", bcolors.ENDC)
+   # print(bcolors.OKBLUE, f"=================== Finding the inverse of a non-singular matrix using elementary row operations ===================\n {matrix}\n", bcolors.ENDC)
 
     # Checks whether the matrix is square
     # "matrix.shape" is a tuple representing the dimensions of the array
@@ -19,7 +19,7 @@ def inverse(matrix):
         raise ValueError("Input matrix must be square.")
 
     mat_size = matrix.shape[0]
-
+    counter = 0
     # creates an identity matrix - An identity matrix is a square matrix with 1 on the main diagonal and 0 elsewhere.
     # "np.identity" function from the NumPy library is used to create identity matrices.
     identity = np.identity(mat_size)
@@ -44,12 +44,14 @@ def inverse(matrix):
 
             # Creates a suitable elementary matrix so that it turns into 1
             elementary_matrix = scalar_multiplication_elementary_matrix(mat_size, i, scalar)
-            print(f"elementary matrix to make the diagonal element 1 :\n {elementary_matrix} \n")
+            counter += 1
+            if counter <= 3:
+                print(f"elementary matrix to make the diagonal element 1 :\n {elementary_matrix} \n")
 
             # performs matrix multiplication between the elementary_matrix and matrix using "NumPy's np.dot function".
             matrix = np.dot(elementary_matrix, matrix)
-            print(f"The matrix after elementary operation :\n {matrix}")
-            print(bcolors.OKGREEN, "------------------------------------------------------------------------------------------------------------------",  bcolors.ENDC)
+            # print(f"The matrix after elementary operation :\n {matrix}")
+            # print(bcolors.OKGREEN, "------------------------------------------------------------------------------------------------------------------",  bcolors.ENDC)
 
             #
             identity = np.dot(elementary_matrix, identity)
@@ -60,12 +62,14 @@ def inverse(matrix):
             if i != j:
                 scalar = -matrix[j, i] / matrix[i, i]
                 elementary_matrix = row_addition_elementary_matrix(mat_size, j, i, scalar)
-                print(f"elementary matrix for R{j+1} = R{j+1} + ({scalar}R{i+1}):\n {elementary_matrix} \n")
+                counter += 1
+                if counter <= 3:
+                    print(f"elementary matrix for R{j+1} = R{j+1} + ({scalar}R{i+1}):\n {elementary_matrix} \n")
                 # use of np.dot for matrix multiplication
                 matrix = np.dot(elementary_matrix, matrix)
-                print(f"The matrix after elementary operation :\n {matrix}")
-                print(bcolors.OKGREEN, "------------------------------------------------------------------------------------------------------------------",
-                      bcolors.ENDC)
+               # print(f"The matrix after elementary operation :\n {matrix}")
+               # print(bcolors.OKGREEN, "------------------------------------------------------------------------------------------------------------------",
+                #      bcolors.ENDC)
                 # use of np.dot for matrix multiplication
                 identity = np.dot(elementary_matrix, identity)
 
@@ -85,22 +89,26 @@ def final_inverse_test(mat, inverse_mat):
 
 if __name__ == '__main__':
 
-    A = np.array([[0, 2, 3],
-                  [2, 0, 4],
-                  [2, 4, 6]])
+    A = np.array([[1, 1/2, 1/3],
+                  [1/2, 1/3, 1/4],
+                  [1/3, 1/4, 1/5]])
 
     try:
+        print(f"The max Norm is: {MaxNorm(A)}")
         A_inverse = inverse(A)
-        print(bcolors.OKBLUE, "\nInverse of matrix A: \n", A_inverse)
-        print("=====================================================================================================================", bcolors.ENDC)
+        # print(bcolors.OKBLUE, "\nInverse of matrix A: \n", A_inverse)
+        # print("=====================================================================================================================", bcolors.ENDC)
+        '''
         if A_inverse is not None:
             is_inverse_work = final_inverse_test(A, A_inverse)
             if is_inverse_work:
                 print("Test work successful (A * A_inverse = I)")
             else:
                 print("Test didn't work(A * A_inverse != I)")
+                '''
 
     except ValueError as e:
         print(str(e))
 
-    print(np.linalg.inv(A))
+   # print(np.linalg.inv(A))
+

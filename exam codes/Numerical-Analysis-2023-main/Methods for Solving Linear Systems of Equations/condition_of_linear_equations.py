@@ -51,6 +51,7 @@ if __name__ == '__main__':
     A = np.array([[0, 1.7, 2],
                   [0, -2, -0.5],
                   [0, 0.2, 1]])
+    B = []
     try:
         cond = condition_number(A)
         print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
