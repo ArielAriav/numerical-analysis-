@@ -104,3 +104,4 @@ if __name__ == '__main__':
         print(str(e))
 
     print(np.linalg.inv(A))
+    print(Max)

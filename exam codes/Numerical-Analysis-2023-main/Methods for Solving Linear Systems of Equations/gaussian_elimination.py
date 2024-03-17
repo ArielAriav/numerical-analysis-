@@ -1,6 +1,6 @@
 import numpy as np
-from colors import bcolors
-from matrix_utility import swap_row
+
+from matrix_utility import swap_row, MaxNorm
 
 
 def gaussian_elimination(mat):
@@ -102,17 +102,25 @@ def check_solution(original_matrix, solution_vector_for_check):
 
 if __name__ == '__main__':
 
-    A_b = [[1, 2, 3, 4, 5],
-            [2, 3, 4, 5, 1],
-            [8, 8, 8, 8,1],
-           [24, 15, 22, 1, 8]]
+    A_b =  np.array([[-1, -2, 5, 2],
+                  [4, -1, 1, 4],
+                  [1, 6, 2, 9]])
+
 
     result = gaussian_elimination(A_b)
     if isinstance(result, str):
-        print(result)
-    else:
-        print(bcolors.OKBLUE, "\nSolution for the system:")
-        for x in result:
-            print("{:.6f}".format(x))
+       print(result)
+    # else:
+        # print(bcolors.OKBLUE, "\nSolution for the system:")
+        # for x in result:
+        #    print("{:.6f}".format(x))
 
-    check_solution(A_b, result)
+   # check_solution(A_b, result)
+
+    # Extract coefficients and constants from the original_matrix
+    # This selects all rows and all columns except the last one
+    coefficients = A_b[:, :-1]
+    # This selects all rows and only the last column
+    vector_b = A_b[[]]
+
+    print("Max norm of the coefficients matrix: ", MaxNorm(coefficients))
