@@ -2,60 +2,76 @@ import math
 import numpy as np
 from colors import bcolors
 
-"""
-Receives 3 parameters:
-    1.  a - start value.
-    2.  b - end  value. 
-    3.  err - value of tolerable error
 
-Returns variables:
-    1.  S - The minimum number of iterations required to reach the desired accuracy
-"""
 def max_steps(a, b, err):
-    s = int(np.floor(- np.log2(err / (b - a)) / np.log2(2) - 1))
+    """
+    Calculate the maximum number of iterations required to achieve the desired accuracy.
+
+    Parameters:
+        a (float): Start value of the interval.
+        b (float): End value of the interval.
+        err (float): Tolerable error.
+
+    Returns:
+        int: The minimum number of iterations required.
+    """
+    s = int(np.floor(-np.log2(err / (b - a)) / np.log2(2) - 1))
     return s
 
-"""
-Performs Iterative methods for Nonlinear Systems of Equations to determine the roots of the given function f
-Receives 4 parameters:
-    1. f - continuous function on the interval [a, b], where f (a) and f (b) have opposite signs.
-    2. a - start value.
-    3. b - end  value. 
-    4. tol - the tolerable error , the default value will set as 1e-16
 
-Returns variables:
-    1.  c - The approximate root of the function f
-"""
-def bisection_method(f, a, b, tol=1e-6):
-    if np.sign(f(a)) == np.sign(f(b)):
-        raise Exception("The scalars a and b do not bound a root")
+def bisection_method(f, a, b, tol=1e-6, print_iterations=None):
+    """
+    Perform the bisection method to find the root of a function within the given interval.
+
+    Parameters:
+        f (function): The function for which to find the root.
+        a (float): Start value of the interval.
+        b (float): End value of the interval.
+        tol (float): Tolerable error. Default is 1e-6.
+        print_iterations (list): Optional list of iteration numbers to print.
+
+    Returns:
+        float: The approximate root of the function.
+    """
+
     c, k = 0, 0
-    steps = max_steps(a, b, tol)  # calculate the max steps possible
+    steps = max_steps(a, b, tol)
 
+    # Print header for iteration table
     print("{:<10} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Iteration", "a", "b", "f(a)", "f(b)", "c", "f(c)"))
 
-    # while the diff af a&b is not smaller than tol, and k is not greater than the max possible steps
+    # Perform bisection iterations
     while abs(b - a) > tol and k < steps:
-        c = a + (b - a) / 2  # Calculation of the middle value
+        c = a + (b - a) / 2
 
-        if f(c) == 0 :
-            return c  # Procedure completed successfully
+        if f(c) == 0:
+            return c
 
-        if f(c) * f(a) < 0:  # if sign changed between steps
-            b = c  # move forward
-        else:
-            a = c  # move backward
+        if f(c) * f(a) < 0:
+            b = c
+        elif f(c) * f(b) < 0:
+            a = c
 
-        print("{:<10} {:<15.6f} {:<15.6f} {:<15.6f} {:<15.6f} {:<15.6f} {:<15.6f}".format(k, a, b, f(a), f(b), c, f(c)))
+        # Print iteration details if the current iteration is in the print_iterations list
+        if print_iterations is None or k in print_iterations:
+            print("{:<10} {:<15.6f} {:<15.6f} {:<15.6f} {:<15.6f} {:<15.6f} {:<15.6f}".format(k, a, b, f(a), f(b), c,
+                                                                                              f(c)))
+
         k += 1
 
-    return c  # return the current root
+    return c
 
 
-
+# ____________________________________________________________________________________________________________
 if __name__ == '__main__':
-    f = lambda x: x**2 - 4 * math.sin(x)
-    roots = bisection_method(f, 1, 3)
-    print(bcolors.OKBLUE, f"\nThe equation f(x) has an approximate root at x = {roots}",bcolors.ENDC,)
+    # Example function: f(x) = x^2 - 4 * sin(x)
+    f = lambda x: x ** 2 - 4 * math.sin(x)
 
+    # ________ change here to print only specific values of iterations _____
+    # roots = bisection_method(f, 1, 3, print_iterations=[1, 3, 5, 10])
+    roots = bisection_method(f, -1, 3)
 
+    print(bcolors.OKBLUE, f"\nThe equation f(x) has an approximate root at x = {roots}", bcolors.ENDC)
+    print(bcolors.OKBLUE, f"\nSearching for another root",bcolors.ENDC)
+    roots = bisection_method(f,roots,3)
+    print(bcolors.OKBLUE, f"\nThe equation f(x) has an approximate root at x = {roots}", bcolors.ENDC)
